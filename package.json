@@ -4,8 +4,14 @@
   "description": "![cf](https://i.imgur.com/7v5ASc8.png) Lab 16: Basic Authentication ======",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage --forceExit",
-    "start": "nodemon index.js"
+    "test": "jest --coverage --forceExit --runInBand",
+    "dbon": "mkdir -p ./db && mongod --dbpath ./db",
+    "dboff": "killall mongod"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/src/__test__/lib/test.env.js"
+    ]
   },
   "repository": {
     "type": "git",

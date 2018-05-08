@@ -10,6 +10,11 @@ const HASH_ROUNDS = 8;
 const TOKEN_SEED_LENGTH = 128;
 
 const accountSchema = mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   passwordHash: {
     type: String,
     required: true,
@@ -30,26 +35,16 @@ const accountSchema = mongoose.Schema({
   },
 });
 
-function verifyPassword(password) {
-  return bcrypt.compare(password, this.passwordHash)
-    .then((result) => {
-      if (!result) {
-        throw new HttpError(400, 'AUTH - incorrect data');
-      }
-      return this;
-    });
-}
-
 function pCreateToken() {
   this.tokenSeed = crypto.randomBytes(TOKEN_SEED_LENGTH).toString('hex');
   return this.save()
     .then((account) => {
       return jsonWebToken.sign(
         { tokenSeed: account.tokenSeed },
-        process.env.SOUND_CLOUD_SECRET,
+        process.env.SOUND_CLOUD_SECRET, 
       );
-    });
-// TODO: error management
+    })
+    .catch(() => new HttpError(401, 'Error creating token'));
 }
 
 accountSchema.methods.pCreateToken = pCreateToken;
