@@ -31,6 +31,16 @@ const accountSchema = mongoose.Schema({
   },
 });
 
+function pVerifyPassword(password) {
+  return bcrypt.compare(password, this.passwordHash)
+    .then((result) => {
+      if (!result) {
+        throw new HttpError(400, 'AUTH - incorrect data');
+      }
+      return this;
+    });
+}
+
 function pCreateToken() {
   this.tokenSeed = crypto.randomBytes(TOKEN_SEED_LENGTH).toString('hex');
   return this.save()
