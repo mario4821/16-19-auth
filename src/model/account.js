@@ -15,23 +15,19 @@ const accountSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
-  passwordHash: {
-    type: String,
-    required: true,
-  },
   email: {
     type: String,
     required: true,
     unique: true,
   },
+  passwordHash: {
+    type: String,
+    required: true,
+  },
   tokenSeed: {
     type: String,
     required: true,
     unique: true,
-  },
-  createdOn: {
-    type: Date,
-    default: () => new Date(),
   },
 });
 

@@ -2,7 +2,7 @@
 
 import superagent from 'superagent';
 import { startServer, stopServer } from '../lib/server';
-import { pRemoveAccountMock, pCreateAccountMock } from './lib/account-mock';
+import { pCreateAccountMock, pRemoveAccountMock } from './lib/account-mock';
 
 const apiURL = `http://localhost:${process.env.PORT}/signup`;
 
@@ -16,7 +16,7 @@ describe('AUTH Router', () => {
       .send({
         username: 'placeholder',
         email: 'placeholder@placeholder.com',
-        password: 'placeholder',
+        password: 'placeholderpassword',
       })
       .then((response) => {
         expect(response.status).toEqual(200);
@@ -24,11 +24,12 @@ describe('AUTH Router', () => {
       });
   });
 
-  test('POST returns a 400 status code', () => {
+  test('POST returns a 400 status code if no email entered', () => {
     return superagent.post(apiURL)
       .send({
-        username: 'placeholder',
-        password: 'placeholder',
+        username: 'Mario',
+        email: ' ',
+        password: 'fakepassword',
       })
       .catch((response) => {
         expect(response.status).toEqual(400);
@@ -44,11 +45,11 @@ describe('AUTH Router', () => {
             username: mock.account.username,
             email: 'placeholder@mock.com',
             password: 'placeholderMock',
+          })
+          .then(Promise.reject)
+          .catch((response) => {
+            expect(response.status).toEqual(409);
           });
-      })
-      .then(Promise.reject)
-      .catch((error) => {
-        expect(error.status).toEqual(409);
       });
   });
 });

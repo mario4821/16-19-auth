@@ -34,7 +34,7 @@
     "jsonwebtoken": "^8.2.1",
     "mongoose": "^5.0.17",
     "superagent": "^3.8.3",
-    "winston": "^2.4.2"
+    "winston": "^3.0.0-rc4"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",

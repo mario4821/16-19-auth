@@ -3,7 +3,7 @@
 import logger from './logger';
 
 export default (error, request, response, next) => { // eslint-disable-line no-unused-vars
-  logger.lgo(logger.ERROR, '__ERROR_MIDDLEWARE__');
+  logger.log(logger.ERROR, '__ERROR_MIDDLEWARE__');
   logger.log(logger.ERROR, error);
 
   if (error.status) {
@@ -17,7 +17,6 @@ export default (error, request, response, next) => { // eslint-disable-line no-u
     logger.log(logger.INFO, 'Responding with a 404 code');
     return response.sendStatus(404);
   }
-
   if (errorMessage.includes('validation failed')) {
     logger.log(logger.INFO, 'Responding with a 400 code');
     return response.sendStatus(400);
@@ -30,7 +29,7 @@ export default (error, request, response, next) => { // eslint-disable-line no-u
     logger.log(logger.INFO, 'Responding with a 401 code');
     return response.sendStatus(401);
   }
-
+  
   logger.log(logger.ERROR, 'Responding with a 500 error code');
   logger.log(logger.ERROR, error);
   return response.sendStatus(500);

@@ -1,12 +1,12 @@
 'use strict';
 
 import { Router } from 'express';
-import bodyParser from 'body-parser';
+import { json } from 'body-parser';
 import Account from '../model/account';
 import logger from '../lib/logger';
 
 const authRouter = new Router();
-const jsonParser = bodyParser.json();
+const jsonParser = json();
 
 authRouter.post('/signup', jsonParser, (request, response, next) => {
   return Account.create(request.body.username, request.body.email, request.body.password)
