@@ -27,4 +27,16 @@ profileRouter.post('/profiles', bearerAuthMiddleware, jsonParser, (request, resp
     .catch(next);
 });
 
+profileRouter.get('/profile/:id', bearerAuthMiddleware, (request, response, next) => {
+  return Profile.findById(request.params.id)
+    .then((profile) => {
+      if (!profile) {
+        return new HttpError(404, 'GET responding with no profile found');
+      }
+      logger.log(logger.INFO, 'GET returning 200 and profile info');
+      return response.json(profile);
+    })
+    .catch(next);
+});
+
 export default profileRouter;

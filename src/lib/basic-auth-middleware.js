@@ -29,6 +29,7 @@ export default (request, response, next) => {
     })
     .then((account) => {
       request.account = account;
+      return next();
     })
     .catch(next);
 };

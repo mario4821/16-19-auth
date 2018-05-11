@@ -23,7 +23,7 @@ export default (request, response, next) => {
   const token = request.headers.authorization.split('Bearer ')[1];
 
   if (!token) {
-    return next(new HttpError(400, 'AUTH - invalid request'));
+    return next(new HttpError(401, 'AUTH - invalid request'));
   }
 
   return promisify(jsonWebToken.verify)(token, process.env.SOUND_CLOUD_SECRET)
