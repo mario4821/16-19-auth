@@ -35,15 +35,25 @@ function pCreateToken() {
   this.tokenSeed = crypto.randomBytes(TOKEN_SEED_LENGTH).toString('hex');
   return this.save()
     .then((account) => {
-      return jsonWebToken.sign(
-        { tokenSeed: account.tokenSeed },
-        process.env.SOUND_CLOUD_SECRET, 
-      );
+      return jsonWebToken.sign({
+        tokenSeed: account.tokenSeed,
+      }, process.env.SOUND_CLOUD_SECRET);
     })
     .catch(() => new HttpError(401, 'Error creating token'));
 }
 
+function pVerifyPassword(password) {
+  return bcrypt.compare(password, this.passwordHash)
+    .then((result) => {
+      if (!result) {
+        throw new HttpError(400, 'AUTH - incorrect data');
+      }
+      return this;
+    });
+}
+
 accountSchema.methods.pCreateToken = pCreateToken;
+accountSchema.methods.pVerifyPassword = pVerifyPassword;
 
 const Account = mongoose.model('account', accountSchema);
 
