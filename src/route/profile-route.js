@@ -10,7 +10,7 @@ import logger from '../lib/logger';
 const jsonParser = json();
 const profileRouter = new Router();
 
-profileRouter.post('/profiles', bearerAuthMiddleware, jsonParser, (request, response, next) => {
+profileRouter.post('/profile', bearerAuthMiddleware, jsonParser, (request, response, next) => {
   if (!request.account) {
     return next(new HttpError(400, 'AUTH - invalid request'));
   }

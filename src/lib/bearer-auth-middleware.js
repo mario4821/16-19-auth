@@ -28,14 +28,14 @@ export default (request, response, next) => {
 
   return promisify(jsonWebToken.verify)(token, process.env.SOUND_CLOUD_SECRET)
     .catch((error) => {
-      return Promise.reject(new HttpError(400, `AUTH - jsonWebToken Error ${error}`));
+      return Promise.reject(new HttpError(401, `AUTH - jsonWebToken Error ${error}`));
     })
     .then((decryptedToken) => {
       return Account.findOne({ tokenSeed: decryptedToken.tokenSeed });
     })
     .then((account) => {
       if (!account) {
-        return next(new HttpError(400, 'AUTH - invalid request'));
+        return next(new HttpError(404, 'AUTH - invalid request'));
       }
       request.account = account;
       return next();
