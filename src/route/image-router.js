@@ -8,9 +8,9 @@ import bearerAuthMiddleware from '../lib/bearer-auth-middleware';
 import Image from '../model/image';
 import { s3Upload, s3Remove } from '../lib/s3';
 
-const multerUpload = multer({ dest: `${__dirname}/..temp` });
-
 const imageRouter = new Router();
+const multerUpload = multer({ dest: `${__dirname}/../temp` });
+
 
 imageRouter.post('/image', bearerAuthMiddleware, multerUpload.any(), (request, response, next) => {
   if (!request.account) {
@@ -32,8 +32,11 @@ imageRouter.post('/image', bearerAuthMiddleware, multerUpload.any(), (request, r
         url,
       }).save();
     })
-    .then(image => response.json(image))
-    .catch(next);
+    .then((image) => {
+      logger.log(logger.INFO, 'Image created and saved');
+      return response.json(image);
+    })
+    .catch(error => next(new HttpError(400, error)));
 });
 
 imageRouter.get('/image/:id', bearerAuthMiddleware, (request, response, next) => {

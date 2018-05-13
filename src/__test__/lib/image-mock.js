@@ -1,7 +1,7 @@
 'use strict';
 
 import faker from 'faker';
-import { pCreateAccountMock, pRemoveAccountMock } from '../lib/account-mock';
+import { pCreateAccountMock } from '../lib/account-mock';
 import Image from '../../model/image';
 import Account from '../../model/account';
 
@@ -12,7 +12,7 @@ const pCreateImageMock = () => {
       resultMock.accountMock = mockAcctResponse;
 
       return new Image({
-        title: faker.lorem.words(5),
+        title: faker.random.words(5),
         url: faker.random.image(),
         account: resultMock.accountMock.account._id,
       }).save();

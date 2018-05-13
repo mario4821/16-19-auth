@@ -27,5 +27,5 @@ awsSDKMock.mock('S3', 'deleteObject', (params, callback) => {
     return callback(new Error('SETUP AWS MOCK ERROR: wrong bucket'));
   }
 
-  return callback(null, {});
+  return callback(null, 'delete success');
 });

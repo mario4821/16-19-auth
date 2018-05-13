@@ -11,16 +11,16 @@ describe('Testing /image', () => {
   afterEach(pRemoveImageMock);
   afterAll(stopServer);
 
-  describe('POST 200 for successful post /image', () => {
+  describe('POST /image', () => {
     test('should return 200 for successful image post', () => {
-      // jest.setTimeout(20000);
+      jest.setTimeout(20000);
       return pCreateImageMock()
-        .then((mockResponse) => {
-          const { token } = mockResponse.accountMock;
+        .then((mock) => {
+          const { token } = mock.accountMock;
           return superagent.post(`${apiURL}/image`)
             .set('Authorization', `Bearer ${token}`)
-            .field('title', 'placeholder image')
-            .attach('image', `${__dirname}/assets/image.jpg`)
+            .field('title', '')
+            .attach('image', `${__dirname}/assets/placeholder.jpg`)
             .then((response) => {
               expect(response.status).toEqual(200);
               expect(response.body.title).toEqual('placeholder image');
@@ -28,20 +28,19 @@ describe('Testing /image', () => {
               expect(response.body.url).toBeTruthy();
             });
         })
-        .catch((err) => {
-          console.log(err.message, 'ERROR IN TEST');
-          expect(err.status).toEqual(400);
+        .catch((error) => {
+          expect(error.status).toEqual(400);
         });
     });
   });
-  test('should return 400 for bad request', () => {
+  test('POST should return 400 for bad request', () => {
     return pCreateImageMock()
-      .then((mockResponse) => {
-        const { token } = mockResponse.accountMock;
+      .then((mock) => {
+        const { token } = mock.accountMock;
         return superagent.post(`${apiURL}/image`)
           .set('Authorization', `Bearer ${token}`)
           .field('title', '')
-          .attach('image', `${__dirname}/assets/image.jpg`)
+          .attach('image', `${__dirname}/assets/placeholder.jpg`)
           .catch((response) => {
             expect(response.status).toEqual(400);
             expect(response.body).toBeFalsy();
@@ -49,27 +48,28 @@ describe('Testing /image', () => {
       });
   });
 
-  test('should return 401 for token error', () => {
+  test('POST should return 401 for token error', () => {
+    jest.setTimeout(20000);
     return pCreateImageMock()
       .then(() => {
-        const token = 12345;
         return superagent.post(`${apiURL}/image`)
-          .set('Authorization', `Bearer ${token}`)
+          .set('Authorization', 'Bearer ')
           .field('title', 'some image')
-          .attach('image', `${__dirname}/assets/image.jpg`)
-          .catch((response) => {
-            expect(response.status).toEqual(401);
-            expect(response.body).toBeFalsy();
+          .attach('image', `${__dirname}/assets/placeholder.jpg`)
+          .then(Promise.reject)
+          .catch((error) => {
+            expect(error.status).toEqual(401);
           });
       });
   });
 
   describe('GET /image/:id', () => {
     test('should return 200 for success', () => {
+    // jest.setTimeout(20000);
       return pCreateImageMock()
-        .then((mockResponse) => {
-          const { token } = mockResponse.accountMock;
-          return superagent.get(`${apiURL}/image/${mockResponse.image._id}`)
+        .then((mock) => {
+          const { token } = mock.accountMock;
+          return superagent.get(`${apiURL}/image/${mock.image._id}`)
             .set('Authorization', `Bearer ${token}`)
             .then((response) => {
               expect(response.status).toEqual(200);
@@ -77,24 +77,27 @@ describe('Testing /image', () => {
         });
     });
 
-    test('should return 401 for missing token', () => {
+    test('GET should return 401 for missing token', () => {
+    // jest.setTimeout(20000);
       return pCreateImageMock()
-        .then((mockResponse) => {
-          const token = 12345;
-          return superagent.get(`${apiURL}/image/${mockResponse.image._id}`)
-            .set('Authorization', `Bearer ${token}`)
-            .catch((response) => {
-              expect(response.status).toEqual(401);
-              expect(response.body).toBeFalsy();
+        .then((mock) => {
+          return superagent.get(`${apiURL}/image/${mock.image._id}`)
+            .set('Authorization', 'Bearer ')
+            .field('title', 'some image')
+            .attach('image', `${__dirname}/assets/placeholder.jpg`)
+            .then(Promise.reject)
+            .catch((error) => {
+              expect(error.status).toEqual(401);
             });
         });
     });
 
-    test('should return 404 for image not found', () => {
+    test('GET /image should return 404 for image not found', () => {
+      // jest.setTimeout(20000);
       return pCreateImageMock()
-        .then((mockResponse) => {
-          const { token } = mockResponse.accountMock;
-          return superagent.get(`${apiURL}/image/1234`)
+        .then((mock) => {
+          const { token } = mock.accountMock;
+          return superagent.get(`${apiURL}/image/placeholder`)
             .set('Authorization', `Bearer ${token}`)
             .catch((response) => {
               expect(response.status).toEqual(404);
@@ -108,9 +111,9 @@ describe('Testing /image', () => {
     test('should return 204 for successful deletion', () => {
     // jest.setTimeout(20000);
       return pCreateImageMock()
-        .then((mockResponse) => {
-          const { token } = mockResponse.accountMock;
-          return superagent.delete(`${apiURL}/image/${mockResponse.image._id}`)
+        .then((mock) => {
+          const { token } = mock.accountMock;
+          return superagent.delete(`${apiURL}/image/${mock.image._id}`)
             .set('Authorization', `Bearer ${token}`)
             .then((response) => {
               expect(response.status).toEqual(204);
@@ -119,24 +122,25 @@ describe('Testing /image', () => {
         });
     });
 
-    test('should return 401 for bad token', () => {
-      // jest.setTimeout(20000);
+    test('DELETE should return 401 for bad token', () => {
+      jest.setTimeout(20000);
       return pCreateImageMock()
-        .then((mockResponse) => {
-          return superagent.delete(`${apiURL}/image/${mockResponse.image._id}`)
-            .then(() => {})
+        .then((mock) => {
+          return superagent.delete(`${apiURL}/image/${mock.image._id}`)
+            .set('Authorization', 'Bearer ')
+            .then(Promise.reject)
             .catch((error) => {
               expect(error.status).toEqual(401);
             });
         });
     });
 
-    test('should return 404 for image not found', () => {
-      // jest.setTimeout(20000);
+    test('DELETE should return 404 for image not found', () => {
+    // jest.setTimeout(20000);
       return pCreateImageMock()
-        .then((mockResponse) => {
-          const { token } = mockResponse.accountMock;
-          return superagent.delete(`${apiURL}/image/1234`)
+        .then((mock) => {
+          const { token } = mock.accountMock;
+          return superagent.delete(`${apiURL}/image/placeholder`)
             .set('Authorization', `Bearer ${token}`)
             .then(() => {})
             .catch((error) => {
