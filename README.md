@@ -1,50 +1,35 @@
-![cf](https://i.imgur.com/7v5ASc8.png) Lab 16: Basic Authentication
-======
+# Lab 16-19 - Basic Authentication
 
-## Submission Instructions
-* Work in a fork of this repository
-* Work in a branch on your fork
-* Open a pull request to this repository
-* Submit on canvas a question and observation, how long you spent, and a link to your pull request
+**Author**: Mario Flores Jr.
 
-## Resources
-* [express docs](http://expressjs.com/en/4x/api.html)
-* [mongoose guide](http://mongoosejs.com/docs/guide.html)
-* [mongoose api docs](http://mongoosejs.com/docs/api.html)
+**Version**: 1.0.0
 
-### Configuration
-Configure the root of your repository with the following files and directories. Thoughtfully name and organize any additional configuration or module files.
-* **README.md** - contains documentation
-* **.env** - contains env variables **(should be git ignored)**
-* **.gitignore** - contains a [robust](http://gitignore.io) `.gitignore` file
-* **.eslintrc.json** - contains the course linter configuration
-* **.eslintignore** - contains the course linter ignore configuration
-* **package.json** - contains npm package config
-  * create a `test` script for running tests
-  * create `dbon` and `dboff` scripts for managing the mongo daemon
-* **db/** - contains mongodb files **(should be git ignored)**
-* **index.js** - entry-point of the application
-* **src/** - contains the remaining code
-  * **src/lib/** - contains module definitions
-  * **src/model/** - contains module definitions
-  * **src/route/** - contains module definitions
-  * **src/\_\_test\_\_/** - contains test modules
-  * **main.js** - starts the server
+## Overview
 
-## Feature Tasks  
-For this assignment you will be building a RESTful HTTP server with basic authentication using express.
+This lab consists of building a RESTful HTTP server with basic authentication using Express. An account and login is created through basic and bearer authentication. A password is hashed from bcrypt, crypto is used to create a token seed, and json web token is used to generate the token.The router makes requests to endpoints, utilizing the schemas as models for the data. Files can then be uploaded and deleted. The database is a MongoDB Cloud remote deployment.  
 
-#### Account
-Create a user `Account` model that keeps track of a username, email, hashed password, and token seed. The model should be able to regenerate tokens using json web token. 
+## Testing
 
-#### Server Endpoints
-* `POST /signup` 
-  * pass data as stringifed JSON in the body of a **POST** request to create a new account
-  * on success respond with a 200 status code and an authentication token
-  * on failure due to a bad request send a 400 status code
+1. To utilize MongoDB, ensure that link to database is entered into MONGODB_URI in the .env and test.env.js files using the following link:
 
-## Tests
-* POST should test for 200, 400, and 409 (if any keys are unique)
+```mongodb://username:password@ds163769.mlab.com:63769/11-express```
 
-## Documentation
-In the README.md write documentation for starting your server and making requests to each endpoint it provides. The documentation should describe how the server would respond to valid and invalid requests.
+*Must obtain specific username and password from author. You may also use your own local Mongo DB.
+
+2. In the terminal, ensure you are in the correct file and type:
+
+```npm run test```
+
+## Functionality
+
+### Account Schema
+
+A POST request will create an account and a token utilizing the required data (username, email, and password), and returning a 200 status code if successfully executed. If any of the required data is missing (i.e. email), the POST request will return a 400 status code. Any duplicate keys will return a a 409 status. Username and password authentication is verified by a 200 status code from GET /login, and a 400 code for a bad request.
+
+### Profile Schema
+
+ After a madatory Account is created, the Profile model is then instantiated with a POST 200 status code for a successfully created Profile. Any invalid response due to incomplete data will return a 400 status code. Invalid accounts that are request will return a 404 status code. A missing token in a request will return a 401 status code.
+
+ ### Image Schema
+
+An image is uploaded utilizing POST, if successfully uploaded, a 200 status code is returned. A bad request will return a 400, and a token error will return a 401. To retrive a specified image, a GET request is made by retrieving the image ID. If a token is missing, 401 is returned, and 404 if the image is not found. Removing an image via DELETE, will return a 204 for a successful deletion, a 401 for a bad token, and a 404 if image is not found.
