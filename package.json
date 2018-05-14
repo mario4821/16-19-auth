@@ -1,12 +1,17 @@
 {
   "name": "16-19-auth",
   "version": "1.0.0",
+  "engines": {
+    "node": "9.11"
+  },
   "description": "![cf](https://i.imgur.com/7v5ASc8.png) Lab 16: Basic Authentication ======",
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage --forceExit --runInBand",
     "dbon": "mkdir -p ./db && mongod --dbpath ./db",
-    "dboff": "killall mongod"
+    "dboff": "killall mongod",
+    "build": "babel src -d build",
+    "start": "babel src -d build && node index.js"
   },
   "jest": {
     "setupFiles": [
@@ -41,8 +46,10 @@
     "winston": "^3.0.0-rc4"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
