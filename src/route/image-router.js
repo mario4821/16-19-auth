@@ -3,8 +3,8 @@
 import { Router } from 'express';
 import multer from 'multer';
 import HttpError from 'http-errors';
-import logger from '../lib/logger';
 import bearerAuthMiddleware from '../lib/bearer-auth-middleware';
+import logger from '../lib/logger';
 import Image from '../model/image';
 import { s3Upload, s3Remove } from '../lib/s3';
 

@@ -15,6 +15,7 @@ awsSDKMock.mock('S3', 'upload', (params, callback) => {
   if (params.Bucket !== process.env.AWS_BUCKET) {
     return callback(new Error('SETUP AWS MOCK ERROR: wrong bucket'));
   }
+  
   return callback(null, { Location: faker.internet.url() });
 });
 
